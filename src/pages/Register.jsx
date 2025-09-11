@@ -2,7 +2,9 @@ import { useState } from "react";
 import axios from "axios";
 
 export default function Register() {
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
+  
+  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -11,7 +13,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:4000/api/users/register", formData);
+      const res = await axios.post("http://localhost:4000/api/auth/register", formData);
       alert("Registration successful!");
       console.log(res.data);
     } catch (error) {
@@ -25,7 +27,7 @@ export default function Register() {
       <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
         <input
           type="text"
-          name="name"
+          name="username"
           placeholder="Name"
           className="p-2 border rounded"
           value={formData.name}
