@@ -27,7 +27,7 @@ export default function Home() {
   if (error) return <p className="text-center mt-10 text-red-600">{error}</p>;
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 min-h-screen w-full">
       <Navbar />
 
       <div className="container mx-auto px-4 py-8">

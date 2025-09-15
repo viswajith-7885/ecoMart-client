@@ -1,4 +1,17 @@
+
+
 export default function ProductCard({ product }) {
+  
+
+  // const handleDelete = async (id) => {
+  //    try {
+  //     await axios.delete(`http://localhost:4000/api/api/products/${id}`);
+
+  //   } catch (err) {
+  //     console.error("Failed to delete product:", err);
+  //     alert("Error deleting product");
+  //   }
+  //     };
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition duration-300">
       <img
@@ -15,8 +28,11 @@ export default function ProductCard({ product }) {
           <span className="text-blue-600 font-bold text-lg">
             ${product.price}
           </span>
-          <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
-            Add to Cart
+          <button className="bg-violet-600 text-white px-3 py-1 rounded hover:bg-blue-700">
+            update
+          </button>
+          <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-blue-700" >
+            Remove
           </button>
         </div>
       </div>
