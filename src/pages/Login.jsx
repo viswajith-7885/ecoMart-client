@@ -1,20 +1,27 @@
 import { useState } from "react";
 import axios from "axios";
+import { Authcontext } from "../context/AuthContext";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const {user,setUser}=useContext(Authcontext);
+  const nav = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    console.log(formData);
     
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:4000/api/auth/login", formData);
+    const res= await axios.post("http://localhost:4000/api/auth/login", formData);
       localStorage.setItem("token", res.data.token);
+      setUser({email:res.data.email})
+      console.log(user);
+      nav('/')
       alert("Login successful!");
     } catch (error) {
       alert(error.response.data.message || "Invalid credentials");
