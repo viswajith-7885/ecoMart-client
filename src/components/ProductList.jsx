@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const ProductList = ({ products, onDelete }) => {
+    const nav = useNavigate()
   return (
     <section className="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen py-12">
       <div className="max-w-5xl mx-auto px-4">
@@ -54,7 +56,19 @@ const ProductList = ({ products, onDelete }) => {
                 >
                   Delete
                 </button>
+                
               )}
+
+              
+                <button
+                  onClick={() => nav(`/updatepro/${product._id}`)}
+                  className="mt-4 sm:mt-0 sm:ml-6 bg-gradient-to-r from-green-500 to-blue-600 hover:from-blue-600 hover:to-green-700 text-white px-5 py-2 rounded-lg font-medium shadow hover:shadow-lg transition-all duration-200"
+                >
+                  update
+                </button>
+                
+              
+              
             </li>
           ))}
         </ul>

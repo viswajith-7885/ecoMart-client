@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 export default function ProductCard({ product }) {
+  const nav = useNavigate();
   return (
     <div className="group relative bg-gradient-to-b from-white to-gray-50 rounded-2xl shadow-md hover:shadow-2xl overflow-hidden transform hover:-translate-y-1 hover:scale-105 transition-all duration-300">
       {/* Product image */}
@@ -33,7 +36,10 @@ export default function ProductCard({ product }) {
             <button className="px-4 py-2 rounded-lg bg-violet-600 text-white font-medium hover:bg-violet-700 hover:shadow-lg transition">
               Buy
             </button>
-            <button className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 hover:border-gray-400 transition">
+            <button
+              className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 hover:border-gray-400 transition"
+              onClick={() => nav(`/productview/${product._id}`)}
+            >
               View
             </button>
           </div>

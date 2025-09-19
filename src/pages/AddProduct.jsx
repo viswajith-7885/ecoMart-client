@@ -10,6 +10,7 @@ export default function AddProduct() {
     description: "",
     price: "",
     image: "",
+    category: "",        // ✅ new field
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -36,7 +37,7 @@ export default function AddProduct() {
       console.log(res.data);
       nav("/");
       setMessage("✅ Product added successfully!");
-      setFormData({ name: "", description: "", price: "", image: "" });
+      setFormData({ name: "", description: "", price: "", image: "", category: "" });
     } catch (err) {
       setMessage(err.response?.data?.message || "❌ Error adding product");
     } finally {
@@ -47,7 +48,6 @@ export default function AddProduct() {
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-indigo-100 py-12 px-4">
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-indigo-100 p-8 md:p-10">
-        {/* Header */}
         <h2 className="text-3xl md:text-4xl font-extrabold text-gray-800 text-center mb-6">
           Add a New Product
         </h2>
@@ -55,7 +55,6 @@ export default function AddProduct() {
           Fill in the details below to showcase your product to the world.
         </p>
 
-        {/* Feedback message */}
         {message && (
           <div
             className={`mb-6 text-center font-medium p-3 rounded-lg transition ${
@@ -68,7 +67,6 @@ export default function AddProduct() {
           </div>
         )}
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Name */}
           <div>
@@ -133,6 +131,26 @@ export default function AddProduct() {
               placeholder="Paste image link"
               required
             />
+          </div>
+
+          {/* ✅ Category */}
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Category
+            </label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            >
+              <option value="">Select a category</option>
+              <option value="fashion">Fashion</option>
+              <option value="home">Home</option>
+              <option value="sports">Sports</option>
+              <option value="electronics">Electronics</option>
+            </select>
           </div>
 
           {/* Submit */}
