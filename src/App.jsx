@@ -9,11 +9,13 @@ import { ProductContext } from "./context/ProductContext";
 import Myproducts from "./pages/Myproducts";
 import UpdateProduct from "./pages/UpdateProduct";
 import ProductView from "./pages/ProductView";
+import ChatUI from "./pages/Chatpage";
 
 function App() {
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
-  const [updatepro,setUpdatepro]=useState([])
+  const [updatepro,setUpdatepro]=useState([]);
+  
   return (
     <Authcontext.Provider value={{ user, setUser }}>
       <ProductContext.Provider value={{ products, setProducts,updatepro,setUpdatepro }}>
@@ -27,6 +29,7 @@ function App() {
               <Route path="/myproducts" element={<Myproducts />} />
               <Route path="/updatepro/:id" element={<UpdateProduct />} />
               <Route path="/productview/:id" element={<ProductView />} />
+              <Route path="/chat" element={<ChatUI />} />
             </Routes>
           </div>
         </Router>

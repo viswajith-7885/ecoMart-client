@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X } from "lucide-react"; // install lucide-react if you don’t have it
+import { Menu, X, Home, LogIn, Package, MessageCircle } from "lucide-react";
+// make sure lucide-react is installed:  npm install lucide-react
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -16,12 +17,20 @@ export default function Navbar() {
           EcoMarket<span className="text-yellow-300">Hub</span>
         </Link>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex space-x-8 font-medium">
-          <NavItem to="/">Home</NavItem>
-          <NavItem to="/login">Login</NavItem>
-          <NavItem to="/register">Register</NavItem>
-          <NavItem to="/myproducts">My Products</NavItem>
+        {/* Desktop Icons */}
+        <div className="hidden md:flex space-x-8 font-medium items-center">
+          <NavIcon to="/" icon={<Home size={22} />} label="Home" />
+          <NavIcon
+            to="/myproducts"
+            icon={<Package size={22} />}
+            label="My Products"
+          />
+          <NavIcon
+            to="/chat"
+            icon={<MessageCircle size={22} />}
+            label="Chats"
+          />
+          <NavIcon to="/login" icon={<LogIn size={22} />} label="Login" />
         </div>
 
         {/* Mobile toggle button */}
@@ -34,39 +43,53 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu with icons */}
       {open && (
         <div className="md:hidden bg-indigo-700 text-white space-y-2 px-4 pb-4 animate-slideDown">
-          <NavItem to="/" onClick={() => setOpen(false)}>
-            Home
-          </NavItem>
-          <NavItem to="/login" onClick={() => setOpen(false)}>
-            Login
-          </NavItem>
-          <NavItem to="/register" onClick={() => setOpen(false)}>
-            Register
-          </NavItem>
-          <NavItem to="/myproducts" onClick={() => setOpen(false)}>
-            My Products
-          </NavItem>
+          <NavIcon
+            to="/"
+            icon={<Home size={20} />}
+            label="Home"
+            onClick={() => setOpen(false)}
+          />
+          <NavIcon
+            to="/login"
+            icon={<LogIn size={20} />}
+            label="Login"
+            onClick={() => setOpen(false)}
+          />
+
+          <NavIcon
+            to="/myproducts"
+            icon={<Package size={20} />}
+            label="My Products"
+            onClick={() => setOpen(false)}
+          />
+          <NavIcon
+            to="/chat"
+            icon={<MessageCircle size={20} />}
+            label="Chats"
+            onClick={() => setOpen(false)}
+          />
         </div>
       )}
     </nav>
   );
 }
 
-// Reusable link component
-function NavItem({ to, children, onClick }) {
+// Reusable icon link
+function NavIcon({ to, icon, label, onClick }) {
   return (
     <Link
       to={to}
       onClick={onClick}
-      className="relative hover:text-yellow-300 transition-colors duration-200
+      className="relative flex items-center space-x-1 hover:text-yellow-300 transition-colors duration-200
                  after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0
                  after:bg-yellow-300 after:transition-all after:duration-300
                  hover:after:w-full"
+      title={label} // tooltip on hover
     >
-      {children}
+      {icon}
     </Link>
   );
 }
