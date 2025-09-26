@@ -44,7 +44,7 @@ const ProductList = ({ products, onDelete }) => {
                   {product.description}
                 </p>
                 <p className="text-indigo-600 font-bold text-xl">
-                  ₹{product.price}
+                  ${product.price}
                 </p>
               </div>
 

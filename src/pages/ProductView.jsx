@@ -1,11 +1,17 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import {  useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { CartContext } from "../context/Cartcontext";
+
 
 export default function ProductView() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const {addToCart}=useContext(CartContext);
+  const nav = useNavigate()
+
+
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -20,6 +26,10 @@ export default function ProductView() {
     };
     fetchProduct();
   }, [id]);
+
+  //Add to cart
+
+  
 
   if (loading) {
     return (
@@ -61,12 +71,15 @@ export default function ProductView() {
               {product.description}
             </p>
             <p className="text-3xl font-bold text-indigo-700 mb-8">
-              ₹{product.price}
+              ${product.price}
             </p>
           </div>
 
           <div className="flex space-x-4">
-            <button className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-semibold shadow-md hover:shadow-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200">
+            <button
+              onClick={()=>{addToCart(product,id) ,nav('/cart')}}
+              className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-semibold shadow-md hover:shadow-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200"
+            >
               Add to Cart
             </button>
             <button className="flex-1 border-2 border-indigo-600 text-indigo-600 py-3 rounded-xl font-semibold hover:bg-indigo-50 transition-colors duration-200">

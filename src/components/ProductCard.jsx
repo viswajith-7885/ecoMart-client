@@ -29,7 +29,7 @@ export default function ProductCard({ product }) {
 
         <div className="flex items-center justify-between mt-4">
           <span className="text-2xl font-extrabold text-violet-700">
-            ₹{product.price}
+            ${product.price}
           </span>
 
           <div className="flex gap-2">

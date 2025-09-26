@@ -1,6 +1,14 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X, Home, LogIn, Package, MessageCircle } from "lucide-react";
+import {
+  Menu,
+  X,
+  Home,
+  LogIn,
+  Package,
+  MessageCircle,
+  ShoppingCart      // ✅ 1. Import the cart icon
+} from "lucide-react";
 // make sure lucide-react is installed:  npm install lucide-react
 
 export default function Navbar() {
@@ -30,6 +38,11 @@ export default function Navbar() {
             icon={<MessageCircle size={22} />}
             label="Chats"
           />
+          <NavIcon
+            to="/cart"                             // ✅ 2. Desktop Cart link
+            icon={<ShoppingCart size={22} />}
+            label="Cart"
+          />
           <NavIcon to="/login" icon={<LogIn size={22} />} label="Login" />
         </div>
 
@@ -58,7 +71,6 @@ export default function Navbar() {
             label="Login"
             onClick={() => setOpen(false)}
           />
-
           <NavIcon
             to="/myproducts"
             icon={<Package size={20} />}
@@ -69,6 +81,12 @@ export default function Navbar() {
             to="/chat"
             icon={<MessageCircle size={20} />}
             label="Chats"
+            onClick={() => setOpen(false)}
+          />
+          <NavIcon
+            to="/cart"                              // ✅ 3. Mobile Cart link
+            icon={<ShoppingCart size={20} />}
+            label="Cart"
             onClick={() => setOpen(false)}
           />
         </div>
