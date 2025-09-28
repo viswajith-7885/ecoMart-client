@@ -18,8 +18,13 @@ export default function UpdateProduct() {
     price: "",
     image: "",
   });
+  const [newImageFile, setNewImageFile] = useState(null); 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+ 
+  const CLOUD_NAME = "dgn5igfzl";          
+  const UPLOAD_PRESET = "Ecomarcket_hub";
 
   useEffect(() => {
     if (product) {
@@ -37,6 +42,10 @@ export default function UpdateProduct() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleFileChange = (e) => {
+    setNewImageFile(e.target.files[0] || null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) {
@@ -44,17 +53,37 @@ export default function UpdateProduct() {
       nav("/login");
       return;
     }
+
     setLoading(true);
     setMessage("");
+
     try {
-      const res = await axios.put(
-        `http://localhost:4000/api/products/update/${id}`,
-        { ...formData, usermail: user.email }
-      );
+      let imageUrl = formData.image;
+
+   
+      if (newImageFile) {
+        const data = new FormData();
+        data.append("file", newImageFile);
+        data.append("upload_preset", UPLOAD_PRESET);
+
+        const uploadRes = await axios.post(
+          `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+          data
+        );
+        imageUrl = uploadRes.data.secure_url;
+      }
+
+      // ✅ Update product with new or existing image URL
+      await axios.put(`http://localhost:4000/api/products/update/${id}`, {
+        ...formData,
+        image: imageUrl,
+        usermail: user.email,
+      });
+
       setMessage("✅ Product updated successfully!");
-      console.log(res.data);
       nav("/");
     } catch (err) {
+      console.error(err);
       setMessage(err.response?.data?.message || "❌ Error updating product");
     } finally {
       setLoading(false);
@@ -103,7 +132,6 @@ export default function UpdateProduct() {
               value={formData.name}
               onChange={handleChange}
               className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-800 p-3 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-indigo-400 transition"
-              placeholder="Awesome Gadget"
               required
             />
           </div>
@@ -119,7 +147,6 @@ export default function UpdateProduct() {
               onChange={handleChange}
               rows="4"
               className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-800 p-3 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-indigo-400 transition"
-              placeholder="Briefly describe your product"
               required
             />
           </div>
@@ -136,25 +163,31 @@ export default function UpdateProduct() {
               onChange={handleChange}
               step="0.01"
               className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-800 p-3 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-indigo-400 transition"
-              placeholder="1999"
               required
             />
           </div>
 
-          {/* Image */}
+          {/* ✅ Cloudinary Image Upload */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-              Image URL
+              Product Image
             </label>
+            <p className="text-xs text-gray-500 mb-1">
+              Current image will remain if you don’t choose a new file.
+            </p>
             <input
-              type="text"
-              name="image"
-              value={formData.image}
-              onChange={handleChange}
-              className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-800 p-3 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-indigo-400 transition"
-              placeholder="https://example.com/image.jpg"
-              required
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-full border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-800 p-3 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-indigo-400 transition file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
             />
+            {formData.image && !newImageFile && (
+              <img
+                src={formData.image}
+                alt="Current"
+                className="mt-3 h-32 w-auto rounded-lg shadow"
+              />
+            )}
           </div>
 
           {/* Buttons */}

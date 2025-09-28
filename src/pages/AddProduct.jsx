@@ -9,36 +9,72 @@ export default function AddProduct() {
     name: "",
     description: "",
     price: "",
-    image: "",
-    category: "",        // ✅ new field
+    category: "",
   });
+  const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const nav = useNavigate();
+
+  const CLOUD_NAME = "dgn5igfzl";          // ✅ replace with your Cloudinary cloud name
+  const UPLOAD_PRESET = "Ecomarcket_hub";  // ✅ replace with your unsigned preset
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleFileChange = (e) => {
+    setImageFile(e.target.files[0] || null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
+
     if (!user) {
       alert("Please login first");
       nav("/login");
+      return;
     }
+
     try {
-      const res = await axios.post("http://localhost:4000/api/products/create", {
-        ...formData,
-        usermail: user.email,
-      });
-      console.log(res.data);
+      if (!imageFile) {
+        setMessage("Please select an image");
+        setLoading(false);
+        return;
+      }
+
+      // 1️⃣ Upload image to Cloudinary
+      const data = new FormData();
+      data.append("file", imageFile);
+      data.append("upload_preset", UPLOAD_PRESET);
+
+      const cloudRes = await axios.post(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        data
+      );
+
+      const imageUrl = cloudRes.data.secure_url;
+
+      // 2️⃣ Send product data with Cloudinary URL to backend
+      const productRes = await axios.post(
+        "http://localhost:4000/api/products/create",
+        {
+          ...formData,
+          image: imageUrl,      // ✅ use Cloudinary URL
+          usermail: user.email,
+        }
+      );
+
+      console.log(productRes.data);
       nav("/");
       setMessage("✅ Product added successfully!");
-      setFormData({ name: "", description: "", price: "", image: "", category: "" });
+      setFormData({ name: "", description: "", price: "", category: "" });
+      setImageFile(null);
     } catch (err) {
+      console.error(err);
       setMessage(err.response?.data?.message || "❌ Error adding product");
     } finally {
       setLoading(false);
@@ -117,23 +153,22 @@ export default function AddProduct() {
             />
           </div>
 
-          {/* Image */}
+          {/* ✅ Cloudinary Image Upload */}
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
-              Image URL
+              Product Image
             </label>
             <input
-              type="text"
+              type="file"
               name="image"
-              value={formData.image}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Paste image link"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
               required
             />
           </div>
 
-          {/* ✅ Category */}
+          {/* Category */}
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
               Category
