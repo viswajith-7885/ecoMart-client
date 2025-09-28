@@ -33,7 +33,7 @@ export default function ProductCard({ product }) {
           </span>
 
           <div className="flex gap-2">
-            <button className="px-4 py-2 rounded-lg bg-violet-600 text-white font-medium hover:bg-violet-700 hover:shadow-lg transition" onClick={()=>nav('/chat')}>
+            <button className="px-4 py-2 rounded-lg bg-violet-600 text-white font-medium hover:bg-violet-700 hover:shadow-lg transition" onClick={()=>nav('/pay')}>
               Buy
             </button>
             <button
