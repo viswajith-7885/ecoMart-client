@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import {  useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { Cartcontext } from "../context/cartcontext.js";
+import { CartContext } from "../context/CartProvider";
 
 
 
@@ -9,7 +9,7 @@ export default function ProductView() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const {addToCart}=useContext(Cartcontext);
+  const {addToCart}=useContext(CartContext);
   const nav = useNavigate()
 
 

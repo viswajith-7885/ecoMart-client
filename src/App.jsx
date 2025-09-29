@@ -11,7 +11,7 @@ import UpdateProduct from "./pages/UpdateProduct";
 import ProductView from "./pages/ProductView";
 import ChatUI from "./pages/Chatpage";
 import Cart from "./pages/Cart";
-import { CartProvider } from "./context/CartProvider";
+import CartProvider  from "./context/CartProvider";
 import Payment from "./pages/Payment"
 
 function App() {
