@@ -1,8 +1,9 @@
 import { useContext } from "react";
-import { CartContext } from "../context/Cartcontext";
+import { Cartcontext } from "../context/Cartcontext";
+
 
 export default function Cart() {
-  const { cartItems, removeFromCart, clearCart } = useContext(CartContext);
+  const { cartItems, removeFromCart, clearCart } = useContext(Cartcontext);
 
   return (
     <div className="p-6  max-w-2xl mx-auto bg-white shadow-2xl rounded-2xl mt-6 w-full">
