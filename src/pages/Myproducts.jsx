@@ -11,7 +11,7 @@ function Myproducts() {
   // Delete Handler
   const onDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/api/products/delete/${id}`);
+      await axios.delete(`https://ecomartcket-hub-server.onrender.com/api/products/delete/${id}`);
       const filtered = products.filter((p) => p._id !== id);
       setProducts(filtered);
     } catch (err) {

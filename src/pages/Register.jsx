@@ -13,7 +13,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:4000/api/auth/register", formData);
+      const res = await axios.post("https://ecomartcket-hub-server.onrender.com/api/auth/register", formData);
       alert("Registration successful!");
       nav('/login')
       console.log(res.data);

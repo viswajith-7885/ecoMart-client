@@ -14,7 +14,7 @@ export default function Home() {
   // Fetch all products once
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/products")
+      .get("https://ecomartcket-hub-server.onrender.com/api/products")
       .then((res) => {
         setProducts(res.data);
         setLoading(false);

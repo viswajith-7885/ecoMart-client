@@ -60,7 +60,7 @@ export default function AddProduct() {
 
       // 2️⃣ Send product data with Cloudinary URL to backend
       const productRes = await axios.post(
-        "http://localhost:4000/api/products/create",
+        "https://ecomartcket-hub-server.onrender.com/api/products/create",
         {
           ...formData,
           image: imageUrl,      // ✅ use Cloudinary URL

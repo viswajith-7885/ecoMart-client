@@ -74,7 +74,7 @@ export default function UpdateProduct() {
       }
 
       // ✅ Update product with new or existing image URL
-      await axios.put(`http://localhost:4000/api/products/update/${id}`, {
+      await axios.put(`https://ecomartcket-hub-server.onrender.com/api/products/update/${id}`, {
         ...formData,
         image: imageUrl,
         usermail: user.email,

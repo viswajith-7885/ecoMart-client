@@ -16,7 +16,7 @@ export default function ProductView() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/api/products/${id}`);
+        const res = await axios.get(`https://ecomartcket-hub-server.onrender.com/api/products/${id}`);
         setProduct(res.data);
       } catch (err) {
         console.error("Error fetching product:", err);
