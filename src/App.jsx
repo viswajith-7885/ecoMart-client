@@ -12,7 +12,7 @@ import ProductView from "./pages/ProductView";
 import ChatUI from "./pages/Chatpage";
 import Cart from "./pages/Cart";
 import { CartProvider } from "./context/CartProvider";
-import Payment from "./pages/payment";
+import Payment from "./pages/Payment"
 
 function App() {
   const [user, setUser] = useState(null);
@@ -40,6 +40,7 @@ function App() {
               <Route path="/chat" element={<ChatUI />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/pay" element={<Payment />} />
+             
             </Routes>
           </div>
         </Router>
