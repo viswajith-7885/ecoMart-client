@@ -17,13 +17,13 @@ export default function UpdateProduct() {
     description: "",
     price: "",
     image: "",
+    category: "",
   });
-  const [newImageFile, setNewImageFile] = useState(null); 
+  const [newImageFile, setNewImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
- 
-  const CLOUD_NAME = "dgn5igfzl";          
+  const CLOUD_NAME = "dgn5igfzl";
   const UPLOAD_PRESET = "Ecomarcket_hub";
 
   useEffect(() => {
@@ -33,6 +33,7 @@ export default function UpdateProduct() {
         description: product.description || "",
         price: product.price || "",
         image: product.image || "",
+        category: product.category || "",
       });
     }
   }, [product]);
@@ -60,7 +61,6 @@ export default function UpdateProduct() {
     try {
       let imageUrl = formData.image;
 
-   
       if (newImageFile) {
         const data = new FormData();
         data.append("file", newImageFile);
@@ -74,11 +74,14 @@ export default function UpdateProduct() {
       }
 
       // ✅ Update product with new or existing image URL
-      await axios.put(`https://ecomartcket-hub-server.onrender.com/api/products/update/${id}`, {
-        ...formData,
-        image: imageUrl,
-        usermail: user.email,
-      });
+      await axios.put(
+        `https://ecomartcket-hub-server.onrender.com/api/products/update/${id}`,
+        {
+          ...formData,
+          image: imageUrl,
+          usermail: user.email,
+        }
+      );
 
       setMessage("✅ Product updated successfully!");
       nav("/");
@@ -135,7 +138,6 @@ export default function UpdateProduct() {
               required
             />
           </div>
-
           {/* Description */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
@@ -150,7 +152,6 @@ export default function UpdateProduct() {
               required
             />
           </div>
-
           {/* Price */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
@@ -166,7 +167,6 @@ export default function UpdateProduct() {
               required
             />
           </div>
-
           {/* ✅ Cloudinary Image Upload */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
@@ -189,7 +189,25 @@ export default function UpdateProduct() {
               />
             )}
           </div>
-
+          
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Category
+            </label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            >
+              <option value="">Select a category</option>
+              <option value="fashion">Fashion</option>
+              <option value="home">Home</option>
+              <option value="sports">Sports</option>
+              <option value="electronics">Electronics</option>
+            </select>
+          </div>
           {/* Buttons */}
           <div className="flex items-center justify-between pt-4">
             <button
