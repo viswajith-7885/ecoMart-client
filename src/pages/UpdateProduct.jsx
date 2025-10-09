@@ -16,10 +16,10 @@ export default function UpdateProduct() {
     name: "",
     description: "",
     price: "",
-    image: "",
+    images: [], // Changed to array
     category: "",
   });
-  const [newImageFile, setNewImageFile] = useState(null);
+  const [newImageFiles, setNewImageFiles] = useState([]); // For multiple files
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -32,7 +32,7 @@ export default function UpdateProduct() {
         name: product.name || "",
         description: product.description || "",
         price: product.price || "",
-        image: product.image || "",
+        images: product.images || [], // Make sure product.images is an array
         category: product.category || "",
       });
     }
@@ -44,7 +44,7 @@ export default function UpdateProduct() {
   };
 
   const handleFileChange = (e) => {
-    setNewImageFile(e.target.files[0] || null);
+    setNewImageFiles(Array.from(e.target.files)); // Multiple files
   };
 
   const handleSubmit = async (e) => {
@@ -59,26 +59,31 @@ export default function UpdateProduct() {
     setMessage("");
 
     try {
-      let imageUrl = formData.image;
+      let imageUrls = [...formData.images]; // Keep existing images
 
-      if (newImageFile) {
-        const data = new FormData();
-        data.append("file", newImageFile);
-        data.append("upload_preset", UPLOAD_PRESET);
+      if (newImageFiles.length > 0) {
+        // Upload multiple files to Cloudinary
+        const uploadPromises = newImageFiles.map((file) => {
+          const data = new FormData();
+          data.append("file", file);
+          data.append("upload_preset", UPLOAD_PRESET);
+          return axios.post(
+            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+            data
+          );
+        });
 
-        const uploadRes = await axios.post(
-          `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-          data
-        );
-        imageUrl = uploadRes.data.secure_url;
+        const uploadResults = await Promise.all(uploadPromises);
+        const newUrls = uploadResults.map((res) => res.data.secure_url);
+
+        imageUrls = [...imageUrls, ...newUrls]; // Append new images to existing
       }
 
-      // ✅ Update product with new or existing image URL
       await axios.put(
         `https://ecomartcket-hub-server.onrender.com/api/products/update/${id}`,
         {
           ...formData,
-          image: imageUrl,
+          images: imageUrls, // Send array of image URLs
           usermail: user.email,
         }
       );
@@ -138,6 +143,7 @@ export default function UpdateProduct() {
               required
             />
           </div>
+
           {/* Description */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
@@ -152,6 +158,7 @@ export default function UpdateProduct() {
               required
             />
           </div>
+
           {/* Price */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
@@ -167,29 +174,35 @@ export default function UpdateProduct() {
               required
             />
           </div>
-          {/* ✅ Cloudinary Image Upload */}
+
+          {/* Multiple Image Upload */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-              Product Image
+              Product Images
             </label>
             <p className="text-xs text-gray-500 mb-1">
-              Current image will remain if you don’t choose a new file.
+              Current images will remain if you don’t choose new files.
             </p>
             <input
               type="file"
               accept="image/*"
+              multiple
               onChange={handleFileChange}
               className="w-full border border-gray-300 dark:border-gray-600 bg-white/80 dark:bg-gray-800 p-3 text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-indigo-400 transition file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
             />
-            {formData.image && !newImageFile && (
-              <img
-                src={formData.image}
-                alt="Current"
-                className="mt-3 h-32 w-auto rounded-lg shadow"
-              />
-            )}
+            <div className="mt-3 flex flex-wrap gap-3">
+              {formData.images.map((img, idx) => (
+                <img
+                  key={idx}
+                  src={img}
+                  alt={`Product ${idx}`}
+                  className="h-32 w-auto rounded-lg shadow"
+                />
+              ))}
+            </div>
           </div>
-          
+
+          {/* Category */}
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
               Category
@@ -208,6 +221,7 @@ export default function UpdateProduct() {
               <option value="electronics">Electronics</option>
             </select>
           </div>
+
           {/* Buttons */}
           <div className="flex items-center justify-between pt-4">
             <button
