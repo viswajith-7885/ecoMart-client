@@ -11,23 +11,32 @@ export default function AddProduct() {
     price: "",
     category: "",
   });
-  const [imageFile, setImageFile] = useState(null);
+  const [imageFiles, setImageFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const nav = useNavigate();
 
-  const CLOUD_NAME = "dgn5igfzl";          // ✅ replace with your Cloudinary cloud name
-  const UPLOAD_PRESET = "Ecomarcket_hub";  // ✅ replace with your unsigned preset
+  const CLOUD_NAME = "dgn5igfzl"; // ✅ Cloudinary name
+  const UPLOAD_PRESET = "Ecomarcket_hub"; // ✅ Upload preset
 
+  // handle text inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // handle multiple file selection
   const handleFileChange = (e) => {
-    setImageFile(e.target.files[0] || null);
+    const files = Array.from(e.target.files);
+    setImageFiles((prev) => [...prev, ...files]);
   };
 
+  // remove image preview before upload
+  const handleRemoveImage = (index) => {
+    setImageFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -40,39 +49,42 @@ export default function AddProduct() {
     }
 
     try {
-      if (!imageFile) {
-        setMessage("Please select an image");
+      if (imageFiles.length === 0) {
+        setMessage("Please select at least one image");
         setLoading(false);
         return;
       }
 
-      // 1️⃣ Upload image to Cloudinary
-      const data = new FormData();
-      data.append("file", imageFile);
-      data.append("upload_preset", UPLOAD_PRESET);
+      // Upload multiple images to Cloudinary
+      const uploadedUrls = [];
 
-      const cloudRes = await axios.post(
-        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-        data
-      );
+      for (const file of imageFiles) {
+        const data = new FormData();
+        data.append("file", file);
+        data.append("upload_preset", UPLOAD_PRESET);
 
-      const imageUrl = cloudRes.data.secure_url;
+        const res = await axios.post(
+          `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+          data
+        );
+        uploadedUrls.push(res.data.secure_url);
+      }
 
-      // 2️⃣ Send product data with Cloudinary URL to backend
+      // Send product data to backend
       const productRes = await axios.post(
         "https://ecomartcket-hub-server.onrender.com/api/products/create",
         {
           ...formData,
-          image: imageUrl,      // ✅ use Cloudinary URL
+          images: uploadedUrls,
           usermail: user.email,
         }
       );
 
       console.log(productRes.data);
-      nav("/");
       setMessage("✅ Product added successfully!");
       setFormData({ name: "", description: "", price: "", category: "" });
-      setImageFile(null);
+      setImageFiles([]);
+      nav("/");
     } catch (err) {
       console.error(err);
       setMessage(err.response?.data?.message || "❌ Error adding product");
@@ -88,7 +100,7 @@ export default function AddProduct() {
           Add a New Product
         </h2>
         <p className="text-center text-gray-500 mb-8">
-          Fill in the details below to showcase your product to the world.
+          Upload multiple product images and details below.
         </p>
 
         {message && (
@@ -104,7 +116,7 @@ export default function AddProduct() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Name */}
+          {/* Product Name */}
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
               Product Name
@@ -131,7 +143,7 @@ export default function AddProduct() {
               onChange={handleChange}
               rows="4"
               className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Brief description of the product"
+              placeholder="Brief product description"
               required
             />
           </div>
@@ -153,19 +165,40 @@ export default function AddProduct() {
             />
           </div>
 
-          {/* ✅ Cloudinary Image Upload */}
+          {/* Image Upload */}
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
-              Product Image
+              Upload Product Images
             </label>
             <input
               type="file"
-              name="image"
+              multiple
               accept="image/*"
               onChange={handleFileChange}
-              className="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-              required
+              className="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
             />
+
+            {/* Preview */}
+            {imageFiles.length > 0 && (
+              <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {imageFiles.map((file, i) => (
+                  <div key={i} className="relative">
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt="preview"
+                      className="w-full h-32 object-cover rounded-xl border"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(i)}
+                      className="absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded-md"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Category */}

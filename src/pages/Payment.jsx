@@ -1,6 +1,13 @@
-import { useState } from "react";
+import axios from "axios";
+import { useContext, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { ProductContext } from "../context/ProductContext";
+
 
 export default function Payment() {
+
+  const{products,setProducts}=useContext(ProductContext)
+  const nav = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -9,17 +16,26 @@ export default function Payment() {
     cvv: "",
   });
 
+  const {id}=useParams();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // ✅ Integrate your payment gateway logic here (Stripe, Razorpay, etc.)
-    console.log("Payment data:", formData);
-    alert("Payment successful! (Demo)");
+    try {
+      await axios.delete(`https://ecomartcket-hub-server.onrender.com/api/products/delete/${id}`);
+      const filtered = products.filter((p) => p._id !== id);
+      setProducts(filtered);
+      alert("Order placed")
+      nav('/')
+    } catch (err) {
+      console.error("Failed to delete product:", err);
+      alert("Error deleting product");
+    }
   };
+
 
   return (
     <div className="w- w-full min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-600 via-violet-600 to-blue-700 p-6">

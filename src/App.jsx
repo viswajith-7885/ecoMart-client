@@ -39,7 +39,7 @@ function App() {
               <Route path="/productview/:id" element={<ProductView />} />
               <Route path="/chat" element={<ChatUI />} />
               <Route path="/cart" element={<Cart />} />
-              <Route path="/pay" element={<Payment />} />
+              <Route path="/pay/:id" element={<Payment />} />
              
             </Routes>
           </div>

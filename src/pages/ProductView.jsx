@@ -83,7 +83,7 @@ export default function ProductView() {
             >
               Add to Cart
             </button>
-            <button onClick={()=>nav('/pay')} className="flex-1 border-2 border-indigo-600 text-indigo-600 py-3 rounded-xl font-semibold hover:bg-indigo-50 transition-colors duration-200">
+            <button onClick={()=>nav(`/pay/${product._id}`)} className="flex-1 border-2 border-indigo-600 text-indigo-600 py-3 rounded-xl font-semibold hover:bg-indigo-50 transition-colors duration-200">
               Buy Now
             </button>
           </div>
